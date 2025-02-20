@@ -8,7 +8,7 @@ interface CourseCardProps {
 }
 
 const CourseCard: FC<CourseCardProps> = ({ title, description, image }) => {
-  const imageSrc = image || "/skillcert.svg"; // Usa la imagen por defecto si no hay imagen
+  const imageSrc = image || "/skillcert.svg"; 
 
   return (
     <div className="relative flex flex-col w-full max-w-[280px] min-h-[380px] border border-pink-900 rounded-[18px] p-2">
