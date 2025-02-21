@@ -1,9 +1,11 @@
-import React from 'react'
+import React from "react";
 
 const CallActionSection = () => {
-  return (
-    <div>callActionSection</div>
-  )
-}
+	return (
+		<section>
+			<p> CallActionSection</p>
+		</section>
+	);
+};
 
-export default CallActionSection
+export default CallActionSection;
