@@ -1,5 +1,4 @@
 import Image from "next/image";
-import StellarSection from "./home/components/stellarSection";
 
 export default function Home() {
   return (
@@ -96,7 +95,6 @@ export default function Home() {
           />
           Go to nextjs.org →
         </a>
-        <StellarSection />
       </footer>
     </div>
   );
