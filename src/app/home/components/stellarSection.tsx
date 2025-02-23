@@ -5,8 +5,8 @@ import Link from "next/link"
 export default function StellarSection() {
   return (
     <div className="w-full max-w-6xl mx-auto px-4 py-16">
-      <div className="rounded-[24px] bg-gradient-to-r from-[#1A1B26] from-0% via-[#1A1B26] via-30% via-[#2D1F3B] via-50% via-[#4D1F3F] via-65% via-[#661840] via-80% to-[#831843] p-8 md:p-12 flex flex-col md:flex-row items-center gap-8 md:gap-16">
-        <div className="w-56 h-56 relative flex-shrink-0">
+      <div className="rounded-[24px] bg-gradient-to-r from-[#111827] from-15% via-[#111827] via-15% via-[#4a1d3d] via-35% via-[#831843] via-35% to-[#831843] p-8 md:p-12 flex flex-col md:flex-row items-center gap-8 md:gap-16">
+        <div className="w-56 h-56 relative flex-shrink-0 bg-black rounded-full flex items-center justify-center">
           <Image
             src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Stellar%20icon-Y9LTaopZGvHLWjt2debNd0o2jC9781.png"
             alt="Stellar Logo"
