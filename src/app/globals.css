@@ -23,3 +23,15 @@ body {
   padding: 0;
   box-sizing: border-box;
 }
+
+footer {
+  @layer components {
+    h2 {
+      @apply text-purple-600 font-bold text-[24px] leading-[36px] mb-6 mt-[60.28px];
+    }
+
+    a {
+      @apply cursor-pointer hover:text-gray-400 text-[20px] leading-[30px];
+    }
+  }
+}
