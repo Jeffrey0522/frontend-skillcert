@@ -10,7 +10,7 @@ export default function UserRegister() {
               <div>
                 <label
                   htmlFor="name"
-                  className="block text-purple-400 text-2xl md:text-3xl lg:text-4xl pl-7 mb-2"
+                  className="block text-purple-400 text-2xl md:text-3xl pl-7 mb-2"
                 >
                   Name
                 </label>
@@ -19,14 +19,14 @@ export default function UserRegister() {
                   name="name"
                   type="text"
                   placeholder="Name"
-                  className="w-full bg-gray-800 border border-purple-600 h-12 md:h-[71px] rounded-full px-7 py-5 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  className="w-full bg-gray-800 border border-purple-600 h-12 md:h-14 rounded-full px-7 py-5 focus:outline-none focus:ring-2 focus:ring-purple-500"
                   required
                 />
               </div>
               <div>
                 <label
                   htmlFor="lastname"
-                  className="block text-purple-400 text-2xl md:text-3xl lg:text-4xl pl-7 mb-2"
+                  className="block text-purple-400 text-2xl md:text-3xl pl-7 mb-2"
                 >
                   Lastname
                 </label>
@@ -35,7 +35,7 @@ export default function UserRegister() {
                   name="lastname"
                   type="text"
                   placeholder="Lastname"
-                  className="w-full bg-gray-800 border border-purple-600 h-12 md:h-[71px] rounded-full px-7 py-5 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  className="w-full bg-gray-800 border border-purple-600 h-12 md:h-14 rounded-full px-7 py-5 focus:outline-none focus:ring-2 focus:ring-purple-500"
                   required
                 />
               </div>
@@ -44,7 +44,7 @@ export default function UserRegister() {
             <div>
               <label
                 htmlFor="email"
-                className="block text-purple-400 text-2xl md:text-3xl lg:text-4xl pl-7 mb-2"
+                className="block text-purple-400 text-2xl md:text-3xl pl-7 mb-2"
               >
                 Email
               </label>
@@ -53,7 +53,7 @@ export default function UserRegister() {
                 name="email"
                 type="email"
                 placeholder="Email"
-                className="w-full bg-gray-800 border border-purple-600 h-12 md:h-[71px] rounded-full px-7 py-5 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                className="w-full bg-gray-800 border border-purple-600 h-12 md:h-14 rounded-full px-7 py-5 focus:outline-none focus:ring-2 focus:ring-purple-500"
                 required
               />
             </div>
@@ -62,7 +62,7 @@ export default function UserRegister() {
               <div>
                 <label
                   htmlFor="password"
-                  className="block text-purple-400 text-2xl md:text-3xl lg:text-4xl pl-7 mb-2"
+                  className="block text-purple-400 text-2xl md:text-3xl pl-7 mb-2"
                 >
                   Password
                 </label>
@@ -71,14 +71,14 @@ export default function UserRegister() {
                   name="password"
                   type="password"
                   placeholder="Password"
-                  className="w-full bg-gray-800 border border-purple-600 h-12 md:h-[71px] rounded-full px-7 py-5 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  className="w-full bg-gray-800 border border-purple-600 h-12 md:h-14 rounded-full px-7 py-5 focus:outline-none focus:ring-2 focus:ring-purple-500"
                   required
                 />
               </div>
               <div>
                 <label
                   htmlFor="confirm-password"
-                  className="block text-purple-400 text-2xl md:text-3xl lg:text-4xl pl-7 mb-2"
+                  className="block text-purple-400 text-2xl md:text-3xl pl-7 mb-2"
                 >
                   Confirm Password
                 </label>
@@ -87,7 +87,7 @@ export default function UserRegister() {
                   name="confirm-password"
                   type="password"
                   placeholder="Confirm Password"
-                  className="w-full bg-gray-800 border border-purple-600 h-12 md:h-[71px] rounded-full px-7 py-5 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  className="w-full bg-gray-800 border border-purple-600 h-12 md:h-14 rounded-full px-7 py-5 focus:outline-none focus:ring-2 focus:ring-purple-500"
                   required
                 />
               </div>
