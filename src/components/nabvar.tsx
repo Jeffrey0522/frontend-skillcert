@@ -50,7 +50,7 @@ const Navbar = () => {
               <span className="text-2xl font-bold text-violet-600">Skillcert</span>
             </div>
           </Link>
-          <Link href="/" className="text-gray-300 hover:text-violet-600 transition-colors text-lg ml-6">
+          <Link href="/Explore" className="text-gray-300 hover:text-violet-600 transition-colors text-lg ml-6">
             Explore
           </Link>
           <input
