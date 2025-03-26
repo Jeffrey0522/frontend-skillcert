@@ -1,0 +1,42 @@
+// This is a sample Prisma schema file
+// You would place this in the prisma directory of your project
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql" // or your preferred database
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             BigInt          @id @default(autoincrement())
+  email          String          @unique
+  name           String?
+  // Other user fields
+  supportTickets SupportTicket[] @relation("UserTickets")
+  adminTickets   SupportTicket[] @relation("AdminTickets")
+}
+
+model SupportTicket {
+  id          BigInt   @id @default(autoincrement())
+  user_id     BigInt
+  category    String   // Enum stored as string: PAYMENT, COURSE, CERTIFICATE, ACCOUNT, OTHER
+  subject     String   @db.VarChar(150)
+  description String   @db.Text
+  status      String   // Enum stored as string: OPEN, IN_PROGRESS, RESOLVED, CLOSED
+  admin_id    BigInt?  // Nullable
+  created_at  BigInt
+  updated_at  BigInt
+
+  // Define relationships
+  user  User  @relation("UserTickets", fields: [user_id], references: [id])
+  admin User? @relation("AdminTickets", fields: [admin_id], references: [id])
+
+  // Define indexes for better query performance
+  @@index([user_id])
+  @@index([admin_id])
+  @@index([status])
+}
+
