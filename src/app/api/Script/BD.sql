@@ -110,7 +110,7 @@ CREATE TABLE UserAnswer (
 CREATE TABLE CourseProgress (
     Id INT PRIMARY KEY,
     UserId INT,
-    CourseId BIGINT, -- 🔥 cambiado a BIGINT
+    CourseId BIGINT, 
     Progress INT,
     Completed BIT,
     LastAccessAt BIGINT,
