@@ -44,7 +44,7 @@ const page = () => {
             </div>
           </div>
         </div>
-        <div className="w-[40vw] h-[960px] mt-10 bg-gray-800 ">
+        <div className="w-[37vw] h-[960px] mt-10 bg-gray-800 ">
           <div className="border-b-[15px] border-gray-900 p-5">
             <p className="font-medium text-[48px] text-purple-600">
               Course Overview
