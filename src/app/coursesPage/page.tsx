@@ -1,7 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import Rectangle from "../../../public/Rectangle.png"
+// import Rectangle from "../../../public/Rectangle.png"
+
 
 const courses = [
   {
@@ -47,11 +48,11 @@ export default function CoursesPage() {
             className="flex overflow-hidden rounded-lg bg-gray-800 shadow-md w-full max-w-md mx-auto"
           >
             <div className="w-1/3 bg-gray-200 flex items-center justify-center">
-              <Image
+              {/* <Image
                 src={Rectangle}
                 alt="Course Thumbnail"
                 className="object-cover w-full h-full"
-              />
+              /> */}
             </div>
             <div className="w-2/3 p-3 flex flex-col justify-between">
               <h3 className="text-sm font-semibold">{course.name}</h3>
