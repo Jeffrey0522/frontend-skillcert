@@ -51,6 +51,8 @@ export async function GET(request: NextRequest) {
   }
 }
 
+import { validateCreateUserData, validateUpdateUserData } from '@/lib/validators/userValidator';
+
 /**
  * POST /api/User
  * Create a new user
@@ -59,10 +61,11 @@ export async function POST(request: NextRequest) {
   try {
     const body: CreateUserDto = await request.json();
     
-    // Validate required fields
-    if (!body.email || !body.name) {
+    // Validate input data
+    const validationResult = validateCreateUserData(body);
+    if (!validationResult.success) {
       return NextResponse.json(
-        { error: 'Email and name are required' },
+        { error: 'Invalid user data', details: validationResult.errors },
         { status: 400 }
       );
     }
@@ -73,7 +76,7 @@ export async function POST(request: NextRequest) {
     console.error('Error creating user:', error);
     
     // Handle duplicate email error
-    if (error.code === 'P2002' && error.meta?.target?.includes('email')) {
+    if (error.code === 'P2002' && error.meta?.target?.includes('Email')) {
       return NextResponse.json(
         { error: 'Email already exists' },
         { status: 409 }
@@ -105,6 +108,15 @@ export async function PUT(request: NextRequest) {
     
     const userId = parseInt(id, 10);
     const body: UpdateUserDto = await request.json();
+    
+    // Validate input data
+    const validationResult = validateUpdateUserData(body);
+    if (!validationResult.success) {
+      return NextResponse.json(
+        { error: 'Invalid user data', details: validationResult.errors },
+        { status: 400 }
+      );
+    }
     
     const updatedUser = await updateUser(userId, body);
     

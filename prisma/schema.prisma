@@ -7,9 +7,11 @@ generator client {
   provider = "prisma-client-js"
 }
 
-model User {
-  id    Int    @id @default(autoincrement())
-  email String @unique
+model Users {
+  Id    Int    @id
+  Email String @unique
+  Name  String
+  Wallet String?
   transactions MarketplaceTransaction[]
 }
 
@@ -29,6 +31,6 @@ model MarketplaceTransaction {
   status          String  @default("Pending")
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
-  buyer  User   @relation(fields: [buyerId], references: [id])
+  buyer  Users   @relation(fields: [buyerId], references: [Id])
   course Course @relation(fields: [courseId], references: [id])
 }

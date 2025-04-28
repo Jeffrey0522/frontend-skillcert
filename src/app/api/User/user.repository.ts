@@ -10,15 +10,15 @@ export class UserRepository {
    * Find all users
    */
   async findAll(): Promise<User[]> {
-    return prisma.user.findMany();
+    return prisma.users.findMany();
   }
 
   /**
    * Find user by ID
    */
   async findById(id: number): Promise<User | null> {
-    return prisma.user.findUnique({
-      where: { id },
+    return prisma.users.findUnique({
+      where: { Id: id },
     });
   }
 
@@ -26,8 +26,8 @@ export class UserRepository {
    * Find user by email
    */
   async findByEmail(email: string): Promise<User | null> {
-    return prisma.user.findUnique({
-      where: { email },
+    return prisma.users.findUnique({
+      where: { Email: email },
     });
   }
 
@@ -35,7 +35,7 @@ export class UserRepository {
    * Create a new user
    */
   async create(data: CreateUserDto): Promise<User> {
-    return prisma.user.create({
+    return prisma.users.create({
       data,
     });
   }
@@ -44,8 +44,8 @@ export class UserRepository {
    * Update an existing user
    */
   async update(id: number, data: UpdateUserDto): Promise<User> {
-    return prisma.user.update({
-      where: { id },
+    return prisma.users.update({
+      where: { Id: id },
       data,
     });
   }
@@ -54,8 +54,8 @@ export class UserRepository {
    * Delete a user
    */
   async delete(id: number): Promise<User> {
-    return prisma.user.delete({
-      where: { id },
+    return prisma.users.delete({
+      where: { Id: id },
     });
   }
 }
