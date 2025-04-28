@@ -17,6 +17,7 @@ model Course {
   id    Int    @id @default(autoincrement())
   title String
   transactions MarketplaceTransaction[]
+  modules      Module[]  // Added the opposite relation
 }
 
 model MarketplaceTransaction {
@@ -31,4 +32,34 @@ model MarketplaceTransaction {
   updatedAt       DateTime @updatedAt
   buyer  User   @relation(fields: [buyerId], references: [id])
   course Course @relation(fields: [courseId], references: [id])
+}
+
+model Module {
+  id          Int      @id @default(autoincrement())  // Changed from BigInt to Int
+  courseId    Int      // Changed from BigInt to Int
+  name        String
+  position    Int
+  description String?
+  status      String   @default("ACTIVE")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  course      Course   @relation(fields: [courseId], references: [id])
+  lessons     Lesson[]
+  
+  @@index([courseId])
+}
+
+model Lesson {
+  id            Int      @id @default(autoincrement())  // Changed from BigInt to Int
+  moduleId      Int      // Changed from BigInt to Int
+  name          String
+  type          String
+  content       String?
+  estimatedTime String?
+  position      Int
+  
+  module        Module   @relation(fields: [moduleId], references: [id])
+  
+  @@index([moduleId])
 }
