@@ -34,7 +34,7 @@ const Navbar = () => {
   }
 
   return (
-    <nav className="bg-gray-900 text-white py-3 px-6 shadow-md">
+    <nav className="bg-gray-800 text-white py-3 px-6 shadow-md">
       <div className="container mx-auto flex items-center justify-between space-x-10">
 
         <div className="flex items-center space-x-4">
