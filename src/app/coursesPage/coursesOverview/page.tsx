@@ -4,10 +4,10 @@ import React from "react";
 
 const page = () => {
   return (
-    <>
+    <div className="h-screen bg-gray-900">
       <Navbar />
-      <div className="flex justify-between bg-gray-900">
-        <div className="bg-[#1F2937] w-[25vw] h-screen">
+      <div className="flex justify-between   bg-gray-900">
+        <div className="bg-[#1F2937]  w-[25vw] ">
           <div className="flex justify-center my-5 py-5 border-b-[5px] border-gray-900">
             <div className="flex flex-col w-fit text-left">
               <p className="font-medium text-[40px] text-purple-600">
@@ -26,7 +26,7 @@ const page = () => {
               </p>
             </div>
           </div>
-          <div className="flex justify-center my-5 pb-5 h-full bg-[#1F2937] ">
+          <div className="flex justify-center my-5 pb-5  bg-[#1F2937] ">
             <div className="flex flex-col ">
               <p className="font-medium text-[36px] gap-6 mb-7 flex  text-purple-600">
                 Course content{" "}
@@ -44,12 +44,12 @@ const page = () => {
             </div>
           </div>
         </div>
-        <div className="w-[37vw] h-[960px] mt-10 bg-gray-800 ">
-          <div className="border-b-[15px] border-gray-900 p-5">
+        <div className="w-[37vw]  mt-10  bg-gray-800 ">
+          <div className="border-b-[15px]   border-gray-900 p-5">
             <p className="font-medium text-[48px] text-purple-600">
               Course Overview
             </p>
-            <div className="flex gap-[20px] mt-7 mb-5  mx-10 justify-between">
+            <div className="flex gap-[20px]  mt-7 mb-5  mx-10 justify-between">
               <button className="w-[193px] text-[16px] h-[50px] bg-pink-900 flex items-center justify-center rounded-[25px] text-white">
                 Overview
               </button>{" "}
@@ -60,9 +60,11 @@ const page = () => {
                 Resources
               </button>
             </div>
+
           </div>
+        
         </div>
-        <div className="w-[28vw] h-[862px] mt-10 bg-gray-800 mr-10">
+        <div className="w-[28vw] mt-10  bg-gray-800 mr-10">
           {" "}
           <div className="border-b-[15px] border-gray-900 p-5">
             <p className="font-medium text-[48px] text-purple-600">
@@ -121,7 +123,7 @@ const page = () => {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
