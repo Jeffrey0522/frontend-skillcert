@@ -17,6 +17,7 @@ model Course {
   id    Int    @id @default(autoincrement())
   title String
   transactions MarketplaceTransaction[]
+  modules      Module[]
 }
 
 model MarketplaceTransaction {
@@ -31,4 +32,35 @@ model MarketplaceTransaction {
   updatedAt       DateTime @updatedAt
   buyer  User   @relation(fields: [buyerId], references: [id])
   course Course @relation(fields: [courseId], references: [id])
+}
+
+model Module {
+  id          Int      @id @default(autoincrement())
+  courseId    Int
+  name        String
+  position    Int
+  description String?
+  lessons     Lesson[]
+  
+  course      Course   @relation(fields: [courseId], references: [id])
+}
+
+model Lesson {
+  id            Int          @id @default(autoincrement())
+  moduleId      Int
+  name          String
+  type          String
+  content       String?
+  estimatedTime String?
+  position      Int
+  
+  module        Module       @relation(fields: [moduleId], references: [id])
+  videoLesson   VideoLesson?
+}
+
+model VideoLesson {
+  lessonId   Int     @id
+  videoURL   String
+  
+  lesson     Lesson  @relation(fields: [lessonId], references: [id])
 }
