@@ -1,5 +1,5 @@
 datasource db {
-  provider = "postgresql"
+  provider = "sqlserver"
   url      = env("DATABASE_URL")
 }
 
@@ -8,27 +8,53 @@ generator client {
 }
 
 model User {
-  id    Int    @id @default(autoincrement())
-  email String @unique
-  transactions MarketplaceTransaction[]
+  id               Int                      @id @default(autoincrement())
+  email            String                   @unique
+  transactions     MarketplaceTransaction[]
+  moduleProgresses ModuleProgress[]
 }
 
 model Course {
-  id    Int    @id @default(autoincrement())
-  title String
+  id           Int                      @id @default(autoincrement())
+  title        String
   transactions MarketplaceTransaction[]
 }
 
 model MarketplaceTransaction {
-  id              Int    @id @default(autoincrement())
+  id              Int      @id @default(autoincrement())
   buyerId         Int
   courseId        Int
   amount          Int
   currency        String
   transactionHash String?
-  status          String  @default("Pending")
+  status          String   @default("Pending")
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
-  buyer  User   @relation(fields: [buyerId], references: [id])
-  course Course @relation(fields: [courseId], references: [id])
+  buyer           User     @relation(fields: [buyerId], references: [id])
+  course          Course   @relation(fields: [courseId], references: [id])
+}
+
+model Module {
+  id              BigInt          @id
+  course_id       BigInt
+  name            Bytes
+  position        Int
+  description     Bytes
+  moduleProgress  ModuleProgress[]
+}
+
+model ModuleProgress {
+  id           Int      @id @default(autoincrement())
+  user_id      Int
+  module_id    BigInt
+  progress     Int      @default(0)
+  completed    Boolean  @default(false)
+  last_access_at BigInt
+  created_at   BigInt
+  updated_at   BigInt
+  
+  user         User     @relation(fields: [user_id], references: [id])
+  module       Module   @relation(fields: [module_id], references: [id])
+
+  @@unique([user_id, module_id])
 }
