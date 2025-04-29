@@ -137,3 +137,7 @@
     @apply cursor-pointer hover:text-gray-400 text-[20px] leading-[30px];
   }
 }
+
+body {
+  font-family: var(--font-poppins, monospace) !important;
+}
