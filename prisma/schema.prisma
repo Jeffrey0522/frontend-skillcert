@@ -1,3 +1,4 @@
+
 datasource db {
   provider = "sqlserver"
   url      = env("DATABASE_URL")
@@ -13,6 +14,7 @@ model User {
   id             Int                      @id @default(autoincrement())
   email          String                   @unique
   name           String?
+  wallet         String?                  // From the "Wallet" field in `Users`
   courseProgress CourseProgress[]
   transactions   MarketplaceTransaction[]
   adminTickets   SupportTicket[]          @relation("AdminTickets")
@@ -27,6 +29,7 @@ model Course {
   progresses   CourseProgress[]
   transactions MarketplaceTransaction[]
   modules      Module[]
+  courseProgresses CourseProgress[]
 }
 
 model MarketplaceTransaction {
@@ -162,4 +165,18 @@ model VideoLesson {
   videoURL   String
   
   lesson     Lesson  @relation(fields: [lessonId], references: [id])
+}
+
+
+model CourseProgress {
+user_id       Int
+course_id     Int
+progress      Int      @default(0)
+completed     Boolean  @default(false)
+last_accessed_at DateTime @default(now())
+
+user          Users    @relation(fields: [user_id], references: [Id])
+course        Course   @relation(fields: [course_id], references: [id])
+
+@@id([user_id, course_id])
 }
