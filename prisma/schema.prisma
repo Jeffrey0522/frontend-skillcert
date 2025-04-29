@@ -2,6 +2,7 @@ generator client {
   provider = "prisma-client-js"
 }
 
+<<<<<<< HEAD
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
@@ -17,6 +18,14 @@ model User {
   adminTickets   SupportTicket[]          @relation("AdminTickets")
   supportTickets SupportTicket[]          @relation("UserTickets")
   userAnswers    UserAnswer[]
+=======
+model Users {
+  Id    Int    @id
+  Email String @unique
+  Name  String
+  Wallet String?
+  transactions MarketplaceTransaction[]
+>>>>>>> ef3d5d255134802ee75507234996670c12ec549e
 }
 
 model Course {
@@ -24,6 +33,7 @@ model Course {
   title        String
   progresses   CourseProgress[]
   transactions MarketplaceTransaction[]
+  modules      Module[]
 }
 
 model MarketplaceTransaction {
@@ -99,4 +109,39 @@ model AnswerOption {
   text        Bytes
   correct     Boolean
   userAnswers UserAnswer[]
+
+  buyer  Users   @relation(fields: [buyerId], references: [Id])
+  course Course @relation(fields: [courseId], references: [id])
+
+}
+
+model Module {
+  id          Int      @id @default(autoincrement())
+  courseId    Int
+  name        String
+  position    Int
+  description String?
+  lessons     Lesson[]
+  
+  course      Course   @relation(fields: [courseId], references: [id])
+}
+
+model Lesson {
+  id            Int          @id @default(autoincrement())
+  moduleId      Int
+  name          String
+  type          String
+  content       String?
+  estimatedTime String?
+  position      Int
+  
+  module        Module       @relation(fields: [moduleId], references: [id])
+  videoLesson   VideoLesson?
+}
+
+model VideoLesson {
+  lessonId   Int     @id
+  videoURL   String
+  
+  lesson     Lesson  @relation(fields: [lessonId], references: [id])
 }
