@@ -1,23 +1,32 @@
 datasource db {
   provider = "sqlserver"
   url      = env("DATABASE_URL")
+  relationMode = "prisma"
 }
 
 generator client {
   provider = "prisma-client-js"
 }
 
+
 model User {
-  id               Int                      @id @default(autoincrement())
-  email            String                   @unique
-  transactions     MarketplaceTransaction[]
+  id             Int                      @id @default(autoincrement())
+  email          String                   @unique
+  name           String?
+  courseProgress CourseProgress[]
+  transactions   MarketplaceTransaction[]
+  adminTickets   SupportTicket[]          @relation("AdminTickets")
+  supportTickets SupportTicket[]          @relation("UserTickets")
+  userAnswers    UserAnswer[]
   moduleProgresses ModuleProgress[]
 }
 
 model Course {
   id           Int                      @id @default(autoincrement())
   title        String
+  progresses   CourseProgress[]
   transactions MarketplaceTransaction[]
+  modules      Module[]
 }
 
 model MarketplaceTransaction {
@@ -57,4 +66,100 @@ model ModuleProgress {
   module       Module   @relation(fields: [module_id], references: [id])
 
   @@unique([user_id, module_id])
+}
+
+model SupportTicket {
+  id          Int    @id @default(autoincrement())
+  user_id     Int
+  category    String
+  subject     String @db.VarChar(150)
+  description String
+  status      String
+  admin_id    Int?
+  created_at  BigInt
+  updated_at  BigInt
+  admin       User?  @relation("AdminTickets", fields: [admin_id], references: [id])
+  user        User   @relation("UserTickets", fields: [user_id], references: [id])
+
+  @@index([user_id])
+  @@index([admin_id])
+  @@index([status])
+}
+
+model CourseProgress {
+  id               Int      @id @default(autoincrement())
+  user_id          Int
+  course_id        Int
+  progress         Int      @default(0)
+  completed        Boolean  @default(false)
+  last_accessed_at BigInt
+  created_at       BigInt
+  updated_at       DateTime @updatedAt
+  course           Course   @relation(fields: [course_id], references: [id])
+  user             User     @relation(fields: [user_id], references: [id])
+
+  @@unique([user_id, course_id])
+}
+
+model UserAnswer {
+  id         Int          @id @default(autoincrement())
+  userId     Int
+  questionId Int
+  answerId   Int
+  createdAt  BigInt
+  answer     AnswerOption @relation(fields: [answerId], references: [id])
+  question   Question     @relation(fields: [questionId], references: [id])
+  user       User         @relation(fields: [userId], references: [id])
+}
+
+model Question {
+  id          Int          @id @default(autoincrement())
+  lessonId    Int
+  text        Bytes
+  type        String
+  position    Int
+  userAnswers UserAnswer[]
+}
+
+model AnswerOption {
+  id          Int          @id @default(autoincrement())
+  questionId  Int
+  text        Bytes
+  correct     Boolean
+  userAnswers UserAnswer[]
+
+  buyer  Users   @relation(fields: [buyerId], references: [Id])
+  course Course @relation(fields: [courseId], references: [id])
+
+}
+
+model Module {
+  id          Int      @id @default(autoincrement())
+  courseId    Int
+  name        String
+  position    Int
+  description String?
+  lessons     Lesson[]
+  
+  course      Course   @relation(fields: [courseId], references: [id])
+}
+
+model Lesson {
+  id            Int          @id @default(autoincrement())
+  moduleId      Int
+  name          String
+  type          String
+  content       String?
+  estimatedTime String?
+  position      Int
+  
+  module        Module       @relation(fields: [moduleId], references: [id])
+  videoLesson   VideoLesson?
+}
+
+model VideoLesson {
+  lessonId   Int     @id
+  videoURL   String
+  
+  lesson     Lesson  @relation(fields: [lessonId], references: [id])
 }
