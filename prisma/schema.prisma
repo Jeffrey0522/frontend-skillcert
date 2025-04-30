@@ -1,35 +1,125 @@
 
-datasource db {
-  provider = "sqlserver"
-  url      = env("DATABASE_URL")
-  relationMode = "prisma"
-}
-
 generator client {
   provider = "prisma-client-js"
 }
 
-
-model User {
-  id             Int                      @id @default(autoincrement())
-  email          String                   @unique
-  name           String?
-  wallet         String?                  // From the "Wallet" field in `Users`
-  courseProgress CourseProgress[]
-  transactions   MarketplaceTransaction[]
-  adminTickets   SupportTicket[]          @relation("AdminTickets")
-  supportTickets SupportTicket[]          @relation("UserTickets")
-  userAnswers    UserAnswer[]
-  moduleProgresses ModuleProgress[]
+datasource db {
+  provider      = "sqlserver"
+  url           = env("DATABASE_URL")
+  relationMode  = "prisma"
 }
 
-model Course {
-  id           Int                      @id @default(autoincrement())
-  title        String
-  progresses   CourseProgress[]
-  transactions MarketplaceTransaction[]
-  modules      Module[]
-  courseProgresses CourseProgress[]
+model User {
+  id              Int                      @id @default(autoincrement())
+  name            String                  
+  email           String                   @unique
+  password        String                   
+  role            String                  
+  bio             String?                  
+  profilePic      String?                  
+  wallet          String?                 
+ 
+  tickets         SupportTicket[]          @relation("UserTickets") 
+  adminTickets    SupportTicket[]          @relation("AdminTickets") 
+  userAnswers     UserAnswer[]
+  courseProgress  CourseProgress[]
+  moduleProgress  ModuleProgress[]
+  lessonProgress  LessonProgress[]
+  transactions    MarketplaceTransaction[]
+}
+
+model SupportTicket {
+  id          Int      @id @default(autoincrement())
+  userId      Int
+  category    String
+  subject     String   @db.VarChar(150)
+  description String
+  status      String
+  adminId     Int?
+  createdAt   BigInt
+  updatedAt   BigInt
+
+  user   User  @relation("UserTickets", fields: [userId], references: [id])
+  admin  User? @relation("AdminTickets", fields: [adminId], references: [id])
+
+  @@index([userId])
+  @@index([adminId])
+  @@index([status])
+}
+
+model Enrollment {
+  studentAddress String
+  courseId       Int
+  enrolledAt     BigInt
+  completed      Boolean
+
+  course Course @relation(fields: [courseId], references: [id])
+
+  @@id([studentAddress, courseId])
+}
+
+model Certificate {
+  id                 Int      @id @default(autoincrement())
+  courseId           Int
+  studentAddress     String
+  institutionAddress String
+  status             Boolean
+  metadata           Bytes
+  issuedAt           DateTime
+
+  course Course @relation(fields: [courseId], references: [id])
+}
+
+model CourseProgress {
+  userId       Int
+  courseId     Int
+  progress     Int      @default(0)
+  completed    Boolean  @default(false)
+  lastAccessAt DateTime @default(now())
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  user   User   @relation(fields: [userId], references: [id])
+  course Course @relation(fields: [courseId], references: [id])
+
+  @@id([userId, courseId])
+}
+
+model ModuleProgress {
+  id           Int      @id @default(autoincrement())
+  userId       Int
+  moduleId     Int
+  progress     Int      @default(0)
+  completed    Boolean  @default(false)
+  lastAccessAt DateTime @default(now())
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  user   User   @relation(fields: [userId], references: [id])
+  module Module @relation(fields: [moduleId], references: [id])
+
+  @@unique([userId, moduleId])
+}
+
+model LessonProgress {
+  id           Int      @id @default(autoincrement())
+  userId       Int
+  lessonId     Int
+  progress     Int
+  completed    Boolean
+  lastAccessAt BigInt
+  createdAt    BigInt
+  updatedAt    BigInt
+
+  user   User   @relation(fields: [userId], references: [id])
+  lesson Lesson @relation(fields: [lessonId], references: [id])
+}
+
+model VideoLesson {
+  lessonId Int   @id
+  videoURL String
+
+  lesson Lesson @relation(fields: [lessonId], references: [id])
 }
 
 model MarketplaceTransaction {
@@ -42,141 +132,84 @@ model MarketplaceTransaction {
   status          String   @default("Pending")
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
-  buyer           User     @relation(fields: [buyerId], references: [id])
-  course          Course   @relation(fields: [courseId], references: [id])
+
+  buyer  User   @relation(fields: [buyerId], references: [id])
+  course Course @relation(fields: [courseId], references: [id])
 }
 
-model Module {
-  id              BigInt          @id
-  course_id       BigInt
-  name            Bytes
-  position        Int
-  description     Bytes
-  moduleProgress  ModuleProgress[]
-}
-
-model ModuleProgress {
-  id           Int      @id @default(autoincrement())
-  user_id      Int
-  module_id    BigInt
-  progress     Int      @default(0)
-  completed    Boolean  @default(false)
-  last_access_at BigInt
-  created_at   BigInt
-  updated_at   BigInt
-  
-  user         User     @relation(fields: [user_id], references: [id])
-  module       Module   @relation(fields: [module_id], references: [id])
-
-  @@unique([user_id, module_id])
-}
-
-model SupportTicket {
-  id          Int    @id @default(autoincrement())
-  user_id     Int
-  category    String
-  subject     String @db.VarChar(150)
-  description String
-  status      String
-  admin_id    Int?
-  created_at  BigInt
-  updated_at  BigInt
-  admin       User?  @relation("AdminTickets", fields: [admin_id], references: [id])
-  user        User   @relation("UserTickets", fields: [user_id], references: [id])
-
-  @@index([user_id])
-  @@index([admin_id])
-  @@index([status])
-}
-
-model CourseProgress {
-  id               Int      @id @default(autoincrement())
-  user_id          Int
-  course_id        Int
-  progress         Int      @default(0)
-  completed        Boolean  @default(false)
-  last_accessed_at BigInt
-  created_at       BigInt
-  updated_at       DateTime @updatedAt
-  course           Course   @relation(fields: [course_id], references: [id])
-  user             User     @relation(fields: [user_id], references: [id])
-
-  @@unique([user_id, course_id])
-}
-
-model UserAnswer {
-  id         Int          @id @default(autoincrement())
-  userId     Int
-  questionId Int
-  answerId   Int
-  createdAt  BigInt
-  answer     AnswerOption @relation(fields: [answerId], references: [id])
-  question   Question     @relation(fields: [questionId], references: [id])
-  user       User         @relation(fields: [userId], references: [id])
+model Course {
+  id             Int                      @id @default(autoincrement())
+  creator        String?                 
+  title          String
+  description    String?
+  metadata       Bytes?
+  modules        Module[]
+  enrollments    Enrollment[]
+  certificates   Certificate[]
+  questions      Question[]
+  courseProgress CourseProgress[]
+  transactions   MarketplaceTransaction[]
 }
 
 model Question {
   id          Int          @id @default(autoincrement())
   lessonId    Int
+  courseId    Int
   text        Bytes
   type        String
   position    Int
+
+  lesson      Lesson         @relation(fields: [lessonId], references: [id])
+  course      Course         @relation(fields: [courseId], references: [id])
+  answers     AnswerOption[]
   userAnswers UserAnswer[]
 }
 
 model AnswerOption {
-  id          Int          @id @default(autoincrement())
-  questionId  Int
-  text        Bytes
-  correct     Boolean
+  id         Int         @id @default(autoincrement())
+  questionId Int
+  text       Bytes
+  correct    Boolean
+
+  question    Question     @relation(fields: [questionId], references: [id])
   userAnswers UserAnswer[]
+}
 
-  buyer  Users   @relation(fields: [buyerId], references: [Id])
-  course Course @relation(fields: [courseId], references: [id])
+model UserAnswer {
+  id         Int      @id @default(autoincrement())
+  userId     Int
+  questionId Int
+  answerId   Int
+  createdAt  BigInt
 
+  user     User         @relation(fields: [userId], references: [id])
+  question Question     @relation(fields: [questionId], references: [id])
+  answer   AnswerOption @relation(fields: [answerId], references: [id])
 }
 
 model Module {
-  id          Int      @id @default(autoincrement())
+  id          Int    @id @default(autoincrement())
   courseId    Int
-  name        String
+  name        Bytes
   position    Int
-  description String?
-  lessons     Lesson[]
-  
-  course      Course   @relation(fields: [courseId], references: [id])
+  description Bytes
+
+  course   Course    @relation(fields: [courseId], references: [id])
+  lessons  Lesson[]
+  progress ModuleProgress[]
 }
 
 model Lesson {
-  id            Int          @id @default(autoincrement())
+  id            Int      @id @default(autoincrement())
   moduleId      Int
-  name          String
+  name          Bytes
   type          String
-  content       String?
-  estimatedTime String?
+  content       Bytes
+  estimatedTime Bytes
   position      Int
-  
-  module        Module       @relation(fields: [moduleId], references: [id])
-  videoLesson   VideoLesson?
-}
 
-model VideoLesson {
-  lessonId   Int     @id
-  videoURL   String
-  
-  lesson     Lesson  @relation(fields: [lessonId], references: [id])
-}
-
-
-model CourseProgress {
-user_id       Int
-course_id     Int
-progress      Int      @default(0)
-completed     Boolean  @default(false)
-last_accessed_at DateTime @default(now())
-
-user          Users    @relation(fields: [user_id], references: [Id])
-course        Course   @relation(fields: [course_id], references: [id])
-
-@@id([user_id, course_id])
+  module         Module           @relation(fields: [moduleId], references: [id])
+  questions      Question[]
+  lessonProgress LessonProgress[]
+  videoLesson    VideoLesson?
 }
