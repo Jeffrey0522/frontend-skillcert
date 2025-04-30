@@ -1,59 +1,102 @@
-// This is a sample Prisma schema file
-// You would place this in the prisma directory of your project
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql" // or your preferred database
+  provider = "postgresql"
   url      = env("DATABASE_URL")
+  relationMode = "prisma"
 }
 
 model User {
-  id             BigInt          @id @default(autoincrement())
-  email          String          @unique
+  id             Int                      @id @default(autoincrement())
+  email          String                   @unique
   name           String?
-  // Other user fields
-  supportTickets SupportTicket[] @relation("UserTickets")
-  adminTickets   SupportTicket[] @relation("AdminTickets")
+  courseProgress CourseProgress[]
+  transactions   MarketplaceTransaction[]
+  adminTickets   SupportTicket[]          @relation("AdminTickets")
+  supportTickets SupportTicket[]          @relation("UserTickets")
+  userAnswers    UserAnswer[]
+}
+
+model Course {
+  id           Int                      @id @default(autoincrement())
+  title        String
+  progresses   CourseProgress[]
+  transactions MarketplaceTransaction[]
+}
+
+model MarketplaceTransaction {
+  id              Int      @id @default(autoincrement())
+  buyerId         Int
+  courseId        Int
+  amount          Int
+  currency        String
+  transactionHash String?
+  status          String   @default("Pending")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  buyer           User     @relation(fields: [buyerId], references: [id])
+  course          Course   @relation(fields: [courseId], references: [id])
 }
 
 model SupportTicket {
-  id          BigInt   @id @default(autoincrement())
-  user_id     BigInt
-  category    String   // Enum stored as string: PAYMENT, COURSE, CERTIFICATE, ACCOUNT, OTHER
-  subject     String   @db.VarChar(150)
-  description String   @db.Text
-  status      String   // Enum stored as string: OPEN, IN_PROGRESS, RESOLVED, CLOSED
-  admin_id    BigInt?  // Nullable
+  id          Int    @id @default(autoincrement())
+  user_id     Int
+  category    String
+  subject     String @db.VarChar(150)
+  description String
+  status      String
+  admin_id    Int?
   created_at  BigInt
   updated_at  BigInt
+  admin       User?  @relation("AdminTickets", fields: [admin_id], references: [id])
+  user        User   @relation("UserTickets", fields: [user_id], references: [id])
 
-  // Define relationships
-  user  User  @relation("UserTickets", fields: [user_id], references: [id])
-  admin User? @relation("AdminTickets", fields: [admin_id], references: [id])
-
-  // Define indexes for better query performance
   @@index([user_id])
   @@index([admin_id])
   @@index([status])
 }
 
 model CourseProgress {
-  id              BigInt  @id @default(autoincrement())
-  user_id         BigInt
-  course_id       BigInt
-  progress        Int     @default(0) // 0-100
-  completed       Boolean @default(false)
+  id               Int      @id @default(autoincrement())
+  user_id          Int
+  course_id        Int
+  progress         Int      @default(0)
+  completed        Boolean  @default(false)
   last_accessed_at BigInt
-  created_at      BigInt  @default(dbgenerated())
-  updated_at      BigInt  @updatedAt
+  created_at       BigInt
+  updated_at       DateTime @updatedAt
+  course           Course   @relation(fields: [course_id], references: [id])
+  user             User     @relation(fields: [user_id], references: [id])
 
-  user   User   @relation(fields: [user_id], references: [id])
-  course Course @relation(fields: [course_id], references: [id])
-
-  @@unique([user_id, course_id]) // Ensures a unique progress record per user per course
+  @@unique([user_id, course_id])
 }
 
+model UserAnswer {
+  id         Int          @id @default(autoincrement())
+  userId     Int
+  questionId Int
+  answerId   Int
+  createdAt  BigInt
+  answer     AnswerOption @relation(fields: [answerId], references: [id])
+  question   Question     @relation(fields: [questionId], references: [id])
+  user       User         @relation(fields: [userId], references: [id])
+}
 
+model Question {
+  id          Int          @id @default(autoincrement())
+  lessonId    Int
+  text        Bytes
+  type        String
+  position    Int
+  userAnswers UserAnswer[]
+}
+
+model AnswerOption {
+  id          Int          @id @default(autoincrement())
+  questionId  Int
+  text        Bytes
+  correct     Boolean
+  userAnswers UserAnswer[]
+}
