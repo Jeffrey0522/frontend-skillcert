@@ -1,76 +1,221 @@
-datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
-}
-
 generator client {
   provider = "prisma-client-js"
 }
 
-model Users {
-  Id           Int                      @id
-  Email        String                   @unique
-  Name         String
-  Wallet       String?
-  transactions MarketplaceTransaction[]
+datasource db {
+  provider     = "sqlserver"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
 }
 
-model Course {
-  id            Int                      @id @default(autoincrement())
-  title         String
-  transactions  MarketplaceTransaction[]
-  modules       Module[] // Correctly keeping modules relation
+model User {
+  id              Int                      @id @default(autoincrement())
+  name            String
+  email           String                   @unique
+  password        String
+  role            String
+  bio             String?
+  profilePic      String?
+  wallet          String?
+
+  tickets         SupportTicket[]          @relation("UserTickets")
+  adminTickets    SupportTicket[]          @relation("AdminTickets")
+  userAnswers     UserAnswer[]
+  courseProgress  CourseProgress[]
+  moduleProgress  ModuleProgress[]
+  lessonProgress  LessonProgress[]
+  transactions    MarketplaceTransaction[]
+}
+
+model SupportTicket {
+  id          Int      @id @default(autoincrement())
+  userId      Int
+  category    String
+  subject     String   @db.VarChar(150)
+  description String
+  status      String
+  adminId     Int?
+  createdAt   BigInt
+  updatedAt   BigInt
+
+  user   User  @relation("UserTickets", fields: [userId], references: [id])
+  admin  User? @relation("AdminTickets", fields: [adminId], references: [id])
+
+  @@index([userId])
+  @@index([adminId])
+  @@index([status])
+}
+
+model Enrollment {
+  studentAddress String
+  courseId       Int
+  enrolledAt     BigInt
+  completed      Boolean
+
+  course Course @relation(fields: [courseId], references: [id])
+
+  @@id([studentAddress, courseId])
+}
+
+model Certificate {
+  id                 Int      @id @default(autoincrement())
+  courseId           Int
+  studentAddress     String
+  institutionAddress String
+  status             Boolean
+  metadata           Bytes
+  issuedAt           DateTime
+
+  course Course @relation(fields: [courseId], references: [id])
+}
+
+model CourseProgress {
+  userId       Int
+  courseId     Int
+  progress     Int      @default(0)
+  completed    Boolean  @default(false)
+  lastAccessAt DateTime @default(now())
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  user   User   @relation(fields: [userId], references: [id])
+  course Course @relation(fields: [courseId], references: [id])
+
+  @@id([userId, courseId])
+}
+
+model ModuleProgress {
+  id           Int      @id @default(autoincrement())
+  userId       Int
+  moduleId     Int
+  progress     Int      @default(0)
+  completed    Boolean  @default(false)
+  lastAccessAt DateTime @default(now())
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  user   User   @relation(fields: [userId], references: [id])
+  module Module @relation(fields: [moduleId], references: [id])
+
+  @@unique([userId, moduleId])
+}
+
+model LessonProgress {
+  id           Int      @id @default(autoincrement())
+  userId       Int
+  lessonId     Int
+  progress     Int
+  completed    Boolean
+  lastAccessAt BigInt
+  createdAt    BigInt
+  updatedAt    BigInt
+
+  user   User   @relation(fields: [userId], references: [id])
+  lesson Lesson @relation(fields: [lessonId], references: [id])
+}
+
+model VideoLesson {
+  lessonId Int   @id
+  videoURL String
+
+  lesson Lesson @relation(fields: [lessonId], references: [id])
 }
 
 model MarketplaceTransaction {
-  id              Int       @id @default(autoincrement())
+  id              Int      @id @default(autoincrement())
   buyerId         Int
   courseId        Int
   amount          Int
   currency        String
   transactionHash String?
-  status          String    @default("Pending")
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
-  
-  buyer           Users     @relation(fields: [buyerId], references: [Id])
-  course          Course    @relation(fields: [courseId], references: [id])
+  status          String   @default("Pending")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  buyer  User   @relation(fields: [buyerId], references: [id])
+  course Course @relation(fields: [courseId], references: [id])
+}
+
+model Course {
+  id             Int                      @id @default(autoincrement())
+  creator        String?
+  title          String
+  description    String?
+  metadata       Bytes?
+  modules        Module[]
+  enrollments    Enrollment[]
+  certificates   Certificate[]
+  questions      Question[]
+  courseProgress CourseProgress[]
+  transactions   MarketplaceTransaction[]
+}
+
+model Question {
+  id          Int          @id @default(autoincrement())
+  lessonId    Int
+  courseId    Int
+  text        Bytes
+  type        String
+  position    Int
+
+  lesson      Lesson         @relation(fields: [lessonId], references: [id])
+  course      Course         @relation(fields: [courseId], references: [id])
+  answers     AnswerOption[]
+  userAnswers UserAnswer[]
+}
+
+model AnswerOption {
+  id         Int         @id @default(autoincrement())
+  questionId Int
+  text       Bytes
+  correct    Boolean
+
+  question    Question     @relation(fields: [questionId], references: [id])
+  userAnswers UserAnswer[]
+}
+
+model UserAnswer {
+  id         Int      @id @default(autoincrement())
+  userId     Int
+  questionId Int
+  answerId   Int
+  createdAt  BigInt
+
+  user     User         @relation(fields: [userId], references: [id])
+  question Question     @relation(fields: [questionId], references: [id])
+  answer   AnswerOption @relation(fields: [answerId], references: [id])
 }
 
 model Module {
-  id          Int        @id @default(autoincrement())
+  id          Int      @id @default(autoincrement())
   courseId    Int
-  name        String
+  name        Bytes
   position    Int
   description String?
   status      String     @default("ACTIVE")
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
-  
+
   course      Course     @relation(fields: [courseId], references: [id])
   lessons     Lesson[]
+  progress    ModuleProgress[]
 
   @@index([courseId])
 }
 
 model Lesson {
-  id            Int          @id @default(autoincrement())
+  id            Int      @id @default(autoincrement())
   moduleId      Int
-  name          String
+  name          Bytes
   type          String
-  content       String?
-  estimatedTime String?
+  content       Bytes
+  estimatedTime Bytes
   position      Int
-  
-  module        Module       @relation(fields: [moduleId], references: [id])
-  videoLesson   VideoLesson?
+
+  module         Module           @relation(fields: [moduleId], references: [id])
+  questions      Question[]
+  lessonProgress LessonProgress[]
+  videoLesson    VideoLesson?
 
   @@index([moduleId])
-}
-
-model VideoLesson {
-  lessonId   Int     @id
-  videoURL   String
-  
-  lesson     Lesson  @relation(fields: [lessonId], references: [id])
 }
