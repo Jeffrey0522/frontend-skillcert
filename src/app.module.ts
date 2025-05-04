@@ -5,6 +5,7 @@ import { UsersModule } from "./app/api/Users/users.module";
 import { AuthModule } from "./app/api/auth/auth.module";
 import { CourseModule } from "./app/api/Courses/course.module";
 import { EnrollmentModule } from "./app/api/enrollment/enrollment.module";
+import { InstitutionModule } from "./app/api/institution/institution.module";
 
 @Module({
   imports: [
@@ -18,7 +19,8 @@ import { EnrollmentModule } from "./app/api/enrollment/enrollment.module";
     UsersModule,
     AuthModule,
     CourseModule,
-    EnrollmentModule
+    EnrollmentModule,
+    InstitutionModule
   ],
 })
 export class AppModule {}
