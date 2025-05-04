@@ -4,6 +4,7 @@ import { SupportTicketModule } from "./app/api/SupportTickets/support-ticket.mod
 import { UsersModule } from "./app/api/Users/users.module";
 import { AuthModule } from "./app/api/auth/auth.module";
 import { CourseModule } from "./app/api/Courses/course.module";
+import { EnrollmentModule } from "./app/api/enrollment/enrollment.module";
 
 @Module({
   imports: [
@@ -16,7 +17,8 @@ import { CourseModule } from "./app/api/Courses/course.module";
     SupportTicketModule,
     UsersModule,
     AuthModule,
-    CourseModule
+    CourseModule,
+    EnrollmentModule
   ],
 })
 export class AppModule {}
