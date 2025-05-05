@@ -3,6 +3,9 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { SupportTicketModule } from "./app/api/SupportTickets/support-ticket.module";
 import { UsersModule } from "./app/api/Users/users.module";
 import { AuthModule } from "./app/api/auth/auth.module";
+import { CourseModule } from "./app/api/Courses/course.module";
+import { EnrollmentModule } from "./app/api/enrollment/enrollment.module";
+import { InstitutionModule } from "./app/api/institution/institution.module";
 
 @Module({
   imports: [
@@ -15,6 +18,9 @@ import { AuthModule } from "./app/api/auth/auth.module";
     SupportTicketModule,
     UsersModule,
     AuthModule,
+    CourseModule,
+    EnrollmentModule,
+    InstitutionModule
   ],
 })
 export class AppModule {}
